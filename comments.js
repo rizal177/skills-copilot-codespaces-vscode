@@ -1,15 +1,38 @@
-// create web server
+// Create web server
+// 1. Create a new Express web server
+// 2. Create a route for the home page
+// 3. Create a route for the comments page
+// 4. Create a route for the comments form
+// 5. Start the web server
+
+// Import the Express module
 const express = require('express');
+// Create a new Express web server
 const app = express();
-// create a router
-const router = express.Router();
-// create a route
-router.get('/comments', (req, res) => {
-  res.send('This is the comments page');
+// Import the comments module
+const comments = require('./comments');
+// Import the body-parser module
+const bodyParser = require('body-parser');
+// Use the body-parser middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Create a route for the home page
+app.get('/', (req, res) => {
+  res.send('<h1>Welcome to the Comments Page</h1>');
 });
-// use the router
-app.use(router);
-// start the server
+
+// Create a route for the comments page
+app.get('/comments', (req, res) => {
+  res.send(comments.getComments());
+});
+
+// Create a route for the comments form
+app.post('/comments', (req, res) => {
+  comments.addComment(req.body.comment);
+  res.redirect('/comments');
+});
+
+// Start the web server
 app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
+  console.log('Web server is listening on port 3000');
 });
